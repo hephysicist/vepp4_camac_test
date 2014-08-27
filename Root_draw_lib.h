@@ -13,35 +13,46 @@ using namespace std;
 class Root_hist
 { 
 	TCanvas *cName;
-	TH1F *hName;
-	public: 
+	TH1F *hName; 
+	double mean;
+	double rms;
+	double max;
+	public:
 	Root_hist(){};	
 	~Root_hist(){};	
 	void makeHist()  //Creates window with histogram	
 	{
+		printf("new hist is going to be made\n");		
 		cName = new TCanvas;
 		hName = new TH1F("","",4097,0,4096);
 		hName->Draw();
+		printf("new hist was made\n");
 	}
 	
-	int addToHist(int data[1000000])//Adds data to histogramm (delay betwin iterations - 1 second)
+	void InitHist(const std::vector<int>  & data)//Adds data to histogramm (delay betwin iterations - 1 second)
 	{
-		int Mean=0;
-		for(int i=0;i<1e6;i++)
+		for(unsigned int i=0;i<data.size();i++)
+		//for(auto d : data)
 		{
  			if(data[i]!=0)
 			hName->Fill(data[i]);
 		}
 		cName->Modified();	
 		cName->Update();
-	        Mean=hName->GetMean(1);
-	        return Mean;
+	        mean=hName->GetMean(1);
+ 		rms=hName->GetRMS(1);
+		//MaxValue=hName->GetBinContent(h->GetMaximumBin())
+		max=hName->GetMaximumBin();
+	       
 	}
 	void ResetHist(void)
 	{
 		hName->Reset();
 	}
-};	
+	double GetMean(void)  { return mean; }
+	double GetRMS(void) { return rms; }
+	double GetMax(void) {return max; }
+};
 class Camac 
 {
  	public:		
@@ -53,7 +64,6 @@ class Camac
 	Delay *del2;
 	Delay *del3;
 	Shaper *sh;
-	int count = 0;	
 	void camacInit( int argc, char** argv)
 	{
 		Crate crate(0,5);
@@ -64,7 +74,6 @@ class Camac
 		unsigned  FEUVoltage0=0,FEUVoltage1=0;//volts
 		double T,load=0;//seconds , Hz// 0 or 1 
 		int charge[4],xq;
-		int count = 0;
 		int ZCPxq=0,x=0,q=0;
 		int LAM=0;
 		int N_count; 
@@ -89,14 +98,14 @@ class Camac
 		cout << program_name << endl << "channel= " << channel <<endl<< "position= " << position <<endl<< "count time=" << T <<endl<< "Diskr.value 1 channel=" << DiskrValue1 <<endl<< "Diskr.value 2 channel=" <<DiskrValue2<<endl<<"V(feu0) = " << FEUVoltage0 <<endl<< "V(feu1) =  " << FEUVoltage1 <<endl<<"Delay1="<<delay1<<endl<<"Delay2="<<delay2<<endl<< "status"<< status  <<  endl;
 		crate.C();
 		crate.Z();
-		counter = new Counter (&crate,position-1);
-		hvps = new HVPS(&crate,position-6);
-		diskr = new Diskriminator(&crate,position-4); 
-		del1 = new Delay(&crate,position-2);
-		del2 = new Delay(&crate,position+6);
-		del3 = new Delay (&crate,position+8);
-		sh = new Shaper(&crate,position+2);
-		zcp = new ZCP(&crate,position);
+		counter = new Counter (&crate,7);
+		hvps = new HVPS(&crate,2);
+		diskr = new Diskriminator(&crate,4); 
+		del1 = new Delay(&crate,6);
+		del2 = new Delay(&crate,14);
+		del3 = new Delay (&crate,16);
+		sh = new Shaper(&crate,10);
+		zcp = new ZCP(&crate,8);
 		Coincidense *con = new Coincidense(&crate,position+4);
 		ofstream f(output_file1);
 		if(!f)
@@ -124,7 +133,6 @@ class Camac
 			con->SetMask(1,0);
 			time_t t1=time(0);
 			time_t last_time=t1;
-			long count=0;
 			con->GetData(0);
 		}
 		if(status==2)
@@ -140,28 +148,35 @@ class Camac
 			cout<<"FEU has turned off\n"<<endl;		
 		}
 	}
-	int getCharge(int N)// N is a number of channel of ZCP from 1 to 4
+	int GetCharge(int N)// N is a number of channel of ZCP from 1 to 4
 	{
-		int ZCPxq,LAM,x,q, datacharge;
+		int ZCPxq,LAM=0,x,q, datacharge;
 		while(LAM!=3)
 		{
-			//usleep(10000);
+			usleep(100000);
 			ZCPxq=zcp->GetZCPLam();
 			LAM = ~ZCPxq&0x3;
 			x = ((~ZCPxq)>>1)&0x1;
 	  		q = ~ZCPxq&0x1;
-			//cout<<ZCPxq<<"\tLAM="<< LAM <<"\tx="<<x<<"\tq="<<q<< endl;
-			usleep(100000);	
+			cout<<ZCPxq<<"\tLAM="<< LAM <<"\tx="<<x<<"\tq="<<q<< endl;	
 		}
 		if(LAM==3) 
 		{
 			datacharge=zcp->GetCharge(N);
-		  	//time_t t=time(0);
 		  	zcp->ResetLAM();
-		  	count++;
-			printf("%d\n",datacharge);	
+			printf("%d\n",datacharge);
+			LAM=0;	
 		}
 	return datacharge;	
+	}
+	unsigned int GetCount(int N)// N is a number of channel of ZCP from 1 to 4
+	{
+		unsigned int datacount = counter->ReadCounter(0);
+		return datacount;
+	}
+        void ResetCount(void) 
+	{
+		counter->ResetCounter();
 	}
 };
 

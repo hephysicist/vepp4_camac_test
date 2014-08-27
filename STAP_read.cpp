@@ -1,14 +1,15 @@
-/*#include <stdio.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <iostream>
-#include <fstream>*/
+#include <fstream>
+using namespace std;
 int StapRead(int N){
 int I[4],i=0;
 string stap;
 ifstream f ("/home/vepp4/kadrs/stap.dat");
 if(f.is_open())
-{s
+{
 	while(i<50)
 	{
 		getline(f,stap);
@@ -19,7 +20,7 @@ if(f.is_open())
 		if(i==49) I[3]=atoi(stap.c_str()); //Ток второго сгустка позитронов (мкА)
 		i++;
 	}			
-	printf("Ie1=%d\nIe2=%d\nIp1=%d\Ip2=%d\n\n",I[0],I[1],I[2],I[3]);		
+	printf("Ie1=%d\nIe2=%d\nIp1=%d\nIp2=%d\n\n",I[0],I[1],I[2],I[3]);		
 	i=0;
 }
 else

@@ -107,7 +107,7 @@ public:
                 printf("data IN[%d]=%d\n",a/2+1,data32[a/2]);
 		}
 	}
-	unsigned ReadCounter(int a)
+	unsigned int ReadCounter(int a)
 	{
          unsigned int  data16[2], data32;
 

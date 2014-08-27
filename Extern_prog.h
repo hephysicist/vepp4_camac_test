@@ -1,1 +1,1 @@
-int StapRead(int N);
+extern int StapRead(int N);
