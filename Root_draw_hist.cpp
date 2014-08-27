@@ -2,6 +2,7 @@
 #include <boost/program_options.hpp>
 #include <TROOT.h>
 #include "camac.h"
+#include "Extern_prog.h"
 #include <TApplication.h>
 #include <TCanvas.h>
 #include <TF1.h>

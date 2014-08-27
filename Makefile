@@ -1,4 +1,4 @@
-SOURCES=Root_draw_hist.cpp
+SOURCES=Root_draw_hist.cpp STAP_read.cpp
 OBJECTS=$(SOURCES:.cpp=.o)
 CXXFLAGS=`root-config --cflags` -c -Wall -std=c++11 
 LIBS=`root-config --libs` -lMinuit -lboost_program_options

@@ -1,0 +1,1 @@
+int StapRead(int N);
