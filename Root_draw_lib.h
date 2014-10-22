@@ -57,7 +57,7 @@ class Camac
 {
  	public:		
 	ZCP *zcp;
-	Counter *counter;
+	Counter *counter1;
 	HVPS *hvps;
 	Diskriminator *diskr;
 	Delay *del1; 
@@ -98,7 +98,7 @@ class Camac
 		cout << program_name << endl << "channel= " << channel <<endl<< "position= " << position <<endl<< "count time=" << T <<endl<< "Diskr.value 1 channel=" << DiskrValue1 <<endl<< "Diskr.value 2 channel=" <<DiskrValue2<<endl<<"V(feu0) = " << FEUVoltage0 <<endl<< "V(feu1) =  " << FEUVoltage1 <<endl<<"Delay1="<<delay1<<endl<<"Delay2="<<delay2<<endl<< "status"<< status  <<  endl;
 		crate.C();
 		crate.Z();
-		counter = new Counter (&crate,7);
+		counter1 = new Counter (&crate,7);
 		hvps = new HVPS(&crate,2);
 		diskr = new Diskriminator(&crate,4); 
 		del1 = new Delay(&crate,6);
@@ -148,7 +148,7 @@ class Camac
 			cout<<"FEU has turned off\n"<<endl;		
 		}
 	}
-	int GetCharge(int N)// N is a number of channel of ZCP from 1 to 4
+	/*int GetCharge(int N)// N is a number of channel of ZCP from 1 to 4
 	{
 		int ZCPxq,LAM=0,x,q, datacharge;
 		while(LAM!=3)
@@ -168,15 +168,16 @@ class Camac
 			LAM=0;	
 		}
 	return datacharge;	
-	}
-	unsigned int GetCount(int N)// N is a number of channel of ZCP from 1 to 4
+	}*/
+	unsigned int GetCount(int N)// N is a number of channel of counter from 0 to 3
 	{
-		unsigned int datacount = counter->ReadCounter(0);
+		unsigned int datacount = counter1->ReadCounter(N);
+		
 		return datacount;
 	}
         void ResetCount(void) 
 	{
-		counter->ResetCounter();
+		counter1->ResetCounter();
 	}
 };
 

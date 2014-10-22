@@ -38,34 +38,37 @@ int main(int argc, char** argv)
 	cout << flush << endl;	
 	while(1)
 	{
-		//for(int c=0;c<1e6;c++){
-		//data1[c]=0;
-		//}
-		data1.resize(0);
+		/*for(int c=0;c<1e6;c++){
+		data1[c]=0;
+		}
+		data1.resize(0);*/
 		time_after=0;
 		time_before=time(NULL);
-          	//printf("Start count");
+          	printf("Start count\n");
 		camac->ResetCount();
-		//printf("first Count = %f\n",count);	
+		//printf("first Count = %d\n",count);	
 		while(time_after<count_time)
 		{
 			//cout << "counting " << i << endl;
 			time_after = time(NULL);
 			time_after-= time_before;
 			//cout << "counting " << i << endl;
-			//data1.push_back(camac->GetCharge(1));
-			//data1[i]=camac->getCharge(0);	
-			//printf("Event %d - %d\n",i,data1[i]);			
+			/*data1.push_back(camac->GetCharge(1));
+			data1[i]=camac->getCharge(0);	
+			printf("Event %d - %d\n",i,data1[i]);*/			
 			i++;
-			usleep(100000);
+			//usleep(100000);
 		}
 		count = camac->GetCount(0);
-		printf("Count = %d\n",count);	
+        	//camac->ResetCount();
+		printf("Count = %d\n",count);
+		//StapRead(1);	
 		i=0;
-		j++;	
-		histogram->InitHist(data1);
-		RMS=histogram->GetRMS();
-		Mean=histogram->GetMean();
+		j++;
+		//usleep(100000);	
+		//histogram->InitHist(data1);
+		//RMS=histogram->GetRMS();
+		//Mean=histogram->GetMean();
 		//printf("Mean value = %f\n",Mean);
 	}	
 theApp.Run();

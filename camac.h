@@ -95,7 +95,7 @@ class Counter : public Module // Camac C0301 block whitch have been remade to 32
 { 
 public:
 	Counter (Crate *c, int pos): Module(c,pos) {}
-	void ReadCounter(void)
+	/*void ReadCounter(void)
 	{
          unsigned int  data16[8], data32[4];
          int a=0;
@@ -104,9 +104,9 @@ public:
 		af16(a,0,&data16[a]);
 		af16(a+1,0,&data16[a+1]);	
                 data32[a/2]=data16[a]+65536*data16[a+1];
-                printf("data IN[%d]=%d\n",a/2+1,data32[a/2]);
+                printf("data IN[%d]=%d\n",a/2+1,data32[a/2])
 		}
-	}
+	}*/
 	unsigned int ReadCounter(int a)
 	{
          unsigned int  data16[2], data32;
@@ -114,6 +114,7 @@ public:
 		af16(2*a,0,&data16[0]);
 		af16(2*a+1,0,&data16[1]);	
                 data32=data16[0]+65536*data16[1];
+		printf("data32 = %d",data32);
               return data32;
 	}
 
